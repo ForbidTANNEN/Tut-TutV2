@@ -52,7 +52,11 @@ app.get("/", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("login", {loginFailure: "none"});
+  if(req.isAuthenticated()){
+    res.redirect("/secrets");
+  }else{
+      res.render("login", {loginFailure: "none"});
+  }
 });
 
 app.get("/signup", function(req, res) {
@@ -69,6 +73,10 @@ app.get("/secrets", function(req, res){
 });
 
 app.post("/signup", function(req, res){
+
+  if(isNaN(req.body.age)){
+    res.render("signup", {signupFailure: "Please have age as a number"})
+  }else{
   User.findOne({username: req.body.username}, function(err, foundUsers){
       if(foundUsers === null){
         User.register({username: req.body.username, age: req.body.age}, req.body.password, function(err, user){
@@ -82,10 +90,9 @@ app.post("/signup", function(req, res){
           }
         })
     }else{
-      console.log("Already have account with that email");
-      res.render("signup", {signupFailure: "That email is already asigned to an email"})
+      res.render("signup", {signupFailure: "That email is already asigned to an email"});
     }
-})
+})}
 });
 
 app.post("/logout", function(req, res){
@@ -102,7 +109,7 @@ app.post("/login", function(req, res){
   User.findOne({username: req.body.username}, function(err, foundUsers){
     if(foundUsers === null){
       console.log("Wrong Username or password");
-      res.render("login", {loginFailure: "Wrong username or password"})
+      res.render("login", {loginFailure: "Wrong username or password"});
     }else{
       req.login(user, function(err){
         if(err){
