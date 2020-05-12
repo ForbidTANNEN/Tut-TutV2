@@ -52,11 +52,11 @@ app.get("/", function(req, res) {
 });
 
 app.get("/login", function(req, res) {
-  res.render("login", {loginFailure: ""});
+  res.render("login", {loginFailure: "none"});
 });
 
 app.get("/signup", function(req, res) {
-  res.render("signup", {signupFailure: ""});
+  res.render("signup", {signupFailure: "none"});
 });
 
 app.get("/secrets", function(req, res){
