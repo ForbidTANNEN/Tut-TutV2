@@ -56,7 +56,7 @@ app.get("/login", function(req, res) {
 });
 
 app.get("/signup", function(req, res) {
-  res.render("signUp", {signupFailure: ""});
+  res.render("signup", {signupFailure: ""});
 });
 
 app.get("/secrets", function(req, res){
