@@ -83,7 +83,7 @@ app.post("/signup", function(req, res){
         })
     }else{
       console.log("Already have account with that email");
-      res.render("signUp", {signupFailure: "That email is already asigned to an email"})
+      res.render("signup", {signupFailure: "That email is already asigned to an email"})
     }
 })
 });
