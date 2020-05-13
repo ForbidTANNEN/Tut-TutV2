@@ -55,12 +55,12 @@ app.get("/login", function(req, res) {
   if(req.isAuthenticated()){
     res.redirect("/secrets");
   }else{
-      res.render("login", {loginFailure: "none"});
+      res.render("login", {loginFailure: ""});
   }
 });
 
 app.get("/signup", function(req, res) {
-  res.render("signup", {signupFailure: "none"});
+  res.render("signup", {signupFailure: ""});
 });
 
 app.get("/secrets", function(req, res){
@@ -100,28 +100,32 @@ app.post("/logout", function(req, res){
   res.redirect("/");
 });
 
-app.post("/login", function(req, res){
+app.post('/login', (req, res, next) => {
+
   const user = new User({
     username: req.body.username,
     password: req.body.password
   });
 
-  User.findOne({username: req.body.username}, function(err, foundUsers){
-    if(foundUsers === null){
-      console.log("Wrong Username or password");
-      res.render("login", {loginFailure: "Wrong username or password"});
-    }else{
-      req.login(user, function(err){
-        if(err){
-          console.log(err);
-        }else{
-          passport.authenticate("local")(req, res, function(){
-            res.redirect("/secrets");
-          })
-        }
-      })
+  passport.authenticate('local',
+  (err, user, info) => {
+    if (err) {
+      return next(err);
     }
-});
+
+    if (!user) {
+      res.render("login", {loginFailure: info.message});
+    }
+
+    req.logIn(user, function(err) {
+      if (err) {
+        return next(err);
+      }
+
+      return res.redirect('/secrets');
+    });
+
+  })(req, res, next);
 });
 
     app.listen(process.env.PORT || 3000, function() {
